@@ -8,8 +8,10 @@ contract ScenarioBondingCurve is DSMath {
     uint public currentSupply;
     uint public totalContributed;
     uint public totalStaked;
+    uint public stakeLocktime;
+    address[] public stakers;
     mapping (address => uint) public ledger;
-    mapping(address => uint[]) stakes;
+    mapping(address => uint[2]) public stakes;
     mapping (address => uint) public contributions;
     mapping (address => uint) public asks;
 
@@ -22,6 +24,8 @@ contract ScenarioBondingCurve is DSMath {
     string internal constant INSUFFICIENT_ETH = 'Insufficient Ether';
     string internal constant INSUFFICIENT_TOKENS = 'Request exceeds token balance';
     string internal constant INVALID_ADDRESS = 'Wallet does not exist';
+    string internal constant ZERO_AMOUNT = "Amount must be nonzero";
+    string internal constant TOKENS_LOCKED = "Vesting period for this stake has not elapsed";
 
     constructor()
     public {
@@ -65,8 +69,42 @@ contract ScenarioBondingCurve is DSMath {
     //     contribute(exitValue, msg.sender);
     //     ledger[msg.sender] = 0;
     // }
-    
-    function 
+
+    function lockStake(uint amount)
+    external {
+        require(amount > 0, ZERO_AMOUNT);
+        require(amount <= ledger[msg.sender], INSUFFICIENT_TOKENS);
+        uint newStakeBalance = add(stakes[msg.sender], amount);
+        uint newLedgerBalance = sub(ledger[msg.sender], amount);
+        if (stakes[msg.sender] == 0) {
+            stakers.push(msg.sender);
+        }
+        stakes[msg.sender] = [newStakeBalance, now];
+        ledger[msg.sender] = newLedgerBalance;
+        totalStake += amount;
+    }
+
+    function unlockStake(uint amount)
+    external {
+        require(amount > 0, ZERO_AMOUNT);
+        require(amount <= stakes[msg.sender][0], INSUFFICIENT_TOKENS);
+        require(now >= add(stakes[msg.sender][1], stakeLocktime), TOKENS_LOCKED);
+        uint newStakeBalance = sub(stakes[msg.sender], amount);
+        uint newLedgerBalance = add(ledger[msg.sender], amount);
+        stakes[msg.sender][0] = newStakeBalance;
+        ledger[msg.sender] = newLedgerBalance;
+        totalStake -= amount;
+    }
+
+    function getStake()
+    external {
+        return stakes[msg.sender];
+    }
+
+    function calcProportionalReward(uint available)
+    external {
+        
+    }
 
     function contribute(uint amount, address sender)
     internal {
