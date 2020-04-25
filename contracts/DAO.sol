@@ -56,7 +56,6 @@ contract CcDAO {
 
         name = _name;
         creator = _creator;
-        tokenFactory = _tokenFactory;
 
         _stakeTotal = 0;
         _rewardTotal = 0;
@@ -74,6 +73,7 @@ contract CcDAO {
 
     functional allocate(address _project, uint256 amount) public {
         require(amount <= address(this).balance, INSUFFICIENT_FUNDS);
+
     }
 
     /**
