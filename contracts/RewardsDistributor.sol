@@ -1,100 +1,76 @@
-pragma solidity ^0.6.4;
-
-import "./TokenFactory.sol";
-import "./TokenTemplate.sol";
+pragma solidity ^0.5.6;
 
 import "@openzeppelin/upgrades/contracts/Initializable.sol";
 import "@openzeppelin/contracts-ethereum-package/contracts/ownership/Ownable.sol";
 import "@openzeppelin/contracts-ethereum-package/contracts/math/SafeMath.sol";
 
 /**
- * @dev Implementation of a DAO (Decentralized Autonomous Organization) for the CommonsHood app.
- *
- * This implementation consists in an organization that have an owner and various members with
- * various roles. The organization is capable of issuing tokens (ERC20 compliant) or Crowdsales.
- * Tokens can be transfered to others accounts or others DAOs. Only members with a role grater
- * than or equal to ROLE_ADMIN can issue new tokens and crowdsales.
- *
- * Users can join the DAO with the role ROLE_MEMBER. They can be promoted to higher roles only by a
- * ROLE_ADMIN or a ROLE_OWNER. All writing operations can be performed only by users with ROLE_ADMIN
- * or higher.
+ * @title RewardsDistributor - Distribute pro rata rewards (dividends)
+ * @author Bogdan Batog (https://batog.info)
+ * @dev Distribute pro rata rewards (dividends) to token holders in O(1) time.
+ *      Based on [1] http://batog.info/papers/scalable-reward-distribution.pdf
+ *      And on [2] https://solmaz.io/2019/02/24/scalable-reward-changing/
  */
-contract CcDAO {
+contract RewardsDistributor is Initializable, Ownable {
     using SafeMath for uint256;
 
-    address public creator;
-    string public name;
-
-    TokenTemplate public RhizomeRewards;
-
-    mapping(address => uint) roles;
-    mapping(address => uint) allocations;
-
+    /// @notice ELIGIBLE_UNIT is the smallest eligible unit for reward. Minimum
+    ///  possible distribution is 1 (wei for Ether) PER ELIGIBLE_UNIT.
+    ///
+    ///  Only multiple of ELIGIBLE_UNIT will be subject to reward
+    ///  distribution. Any fractional part of deposit, smaller than
+    ///  ELIGIBLE_UNIT, won't receive any reward, but it will be tracked.
+    ///
+    ///  Recommended value 10**(decimals / 2), that is 10**9 for most ERC20.
     uint256 public constant ELIGIBLE_UNIT = 10 ** 9;
+
+    /// @notice Stake per address.
     mapping(address => uint256) internal _stake;
+
+    /// @notice Stake remainder per address, smaller than ELIGIBLE_UNIT.
     mapping(address => uint256) internal _stakeRemainder;
+
+    /// @notice Total staked tokens. In ELIGIBLE_UNIT units.
     uint256 internal _stakeTotal;
+
+    /// @notice Total accumulated reward since the beginning of time, in units
+    /// per ELIGIBLE_UNIT.
     uint256 internal _rewardTotal;
+
+    /// @notice Remainder from the last _distribute() call, this amount was not
+    /// enough to award at least 1 wei to every staked ELIGIBLE_UNIT. At the
+    /// time of last _distribute() call _rewardRemainder < _stakeTotal.
+    /// Note that later, _stakeTotal can decrease, but _rewardRemainder will
+    /// stay unchanged until the next call to _distribute().
     uint256 internal _rewardRemainder;
+
+    /// @notice Proportional rewards awarded *before* this stake was created.
+    /// See [2] for more details.
     mapping(address => int256) _rewardOffset;
 
-    uint internal constant ROLE_FACILITATOR = 40;
-    uint internal constant ROLE_RECIPIENT = 30;
-    uint internal constant ROLE_PROJECT = 20;
-    uint internal constant ROLE_NONE = 0;
+    event DepositMade(address indexed from, uint256 value);
+    event DistributionMade(address indexed from, uint256 value);
+    event RewardWithdrawalMade(address indexed to, uint256 value);
+    event StakeWithdrawalMade(address indexed to, uint256 value);
 
-    string internal constant INSUFFICIENT_PRIVILEGES = "Action requires admin privileges";
-    string internal constant INVALID_TARGET = "Amount must be nonzero";
-    string internal constant INSUFFICIENT_FUNDS = "Allocation exceeds available funds";
-
-    constructor(
-        string memory _name,
-        address _creator,
-    ) public {
-        bytes memory testName = bytes(_name);
-        require(testName.length > 0, "DAO Name cannot be empty");
-
-        name = _name;
-        creator = _creator;
-        tokenFactory = _tokenFactory;
+    /// Initialize the contract.
+    /// @param owner Contract owner, can call functions that change state.
+    function initialize(address owner) public initializer {
+        Ownable.initialize(owner);
 
         _stakeTotal = 0;
         _rewardTotal = 0;
         _rewardRemainder = 0;
-
-        roles[creator] = ROLE_FACILITATOR;
-
-        RhizomeRewards = new TokenTemplate('Rhizome', 'RHR', 18, 0, msg.sender);
     }
 
-    function addProject(address _project) public {
-        require(roles[msg.sender] == ROLE_FACILITATOR, INSUFFICIENT_PRIVILEGES);
-        roles[_project] = ROLE_PROJECT;
-    }
-
-    functional allocate(address _project, uint256 amount) public {
-        require(amount <= address(this).balance, INSUFFICIENT_FUNDS);
-    }
-
-    /**
-     * @dev kickMember allows a member to kick a lower-in-grade member.
-     * @param _member the address of the member to kick.
-     */
-    function kickProject(address _project) public {
-        require(roles[_project] > ROLE_NONE, "not a member, cannot kick");
-        require(roles[_project]) < ROLE_RECIPIENT, 
-        require(roles[msg.sender] > ROLE_PROJECT, INSUFFICIENT_PRIVILEGES);
-        require()
-        delete(roles[_member]);
-    }
-
-    function deposit(address staker, uint256 tokens) public returns (bool success) {
+    /// @notice Deposit funds into contract.
+    function deposit(address staker, uint256 tokens) public onlyOwner returns (bool success) {
         uint256 _tokensToAdd = tokens.add(_stakeRemainder[staker]);
 
         uint256 _eligibleUnitsToAdd = _tokensToAdd.div(ELIGIBLE_UNIT);
 
         // update the new remainder for this address
-        _stakeRemainder[msg.sender] = _tokensToAdd.mod(ELIGIBLE_UNIT);
+        _stakeRemainder[staker] = _tokensToAdd.mod(ELIGIBLE_UNIT);
 
         // set the current stake for this address
         _stake[staker] = _stake[staker].add(_eligibleUnitsToAdd);
@@ -105,14 +81,16 @@ contract CcDAO {
         // update reward offset
         _rewardOffset[staker] += (int256)(_rewardTotal * _eligibleUnitsToAdd);
 
+        emit DepositMade(staker, tokens);
         return true;
     }
 
     /// @notice Distribute tokens pro rata to all stakers.
-    function distribute(address project) internal returns (bool success) {
-        uint256 rewards = allocations[project];
+    function distribute(address from, uint256 tokens) public onlyOwner returns (bool success) {
+        require(tokens > 0);
+
         // add past distribution remainder
-        uint256 _amountToDistribute = rewards.add(_rewardRemainder);
+        uint256 _amountToDistribute = tokens.add(_rewardRemainder);
 
         if (_stakeTotal == 0) {
             _rewardRemainder = _amountToDistribute;
@@ -126,17 +104,19 @@ contract CcDAO {
             // increase total rewards per stake unit
             _rewardTotal = _rewardTotal.add(_ratio);
         }
+        emit DistributionMade(from, tokens);
         return true;
     }
 
     /// @notice Withdraw accumulated reward for the staker address.
-    function withdrawReward() public returns (uint256 tokens) {
-        uint256 _reward = getReward(msg.sender);
+    function withdrawReward(address staker) public onlyOwner returns (uint256 tokens) {
+        uint256 _reward = getReward(staker);
 
         // refresh reward offset (so a new call to getReward returns 0)
         _rewardOffset[staker] = (int256)(_rewardTotal.mul(_stake[staker]));
 
-        RhizomeRewards.mint(msg.sender, _reward);
+        emit RewardWithdrawalMade(staker, _reward);
+        return _reward;
     }
 
     /// @notice Withdraw stake for the staker address
@@ -160,6 +140,7 @@ contract CcDAO {
         // update reward offset
         _rewardOffset[staker] -= (int256)(_rewardTotal.mul(_eligibleUnitsDelta));
 
+        emit StakeWithdrawalMade(staker, tokens);
         return true;
     }
 
@@ -193,4 +174,5 @@ contract CcDAO {
 
         return tokens;
     }
+
 }
