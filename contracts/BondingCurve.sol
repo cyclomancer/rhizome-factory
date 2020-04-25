@@ -7,7 +7,9 @@ contract ScenarioBondingCurve is DSMath {
     address payable public beneficiary;
     uint public currentSupply;
     uint public totalContributed;
+    uint public totalStaked;
     mapping (address => uint) public ledger;
+    mapping(address => uint[]) stakes;
     mapping (address => uint) public contributions;
     mapping (address => uint) public asks;
 
@@ -54,16 +56,18 @@ contract ScenarioBondingCurve is DSMath {
         currentSupply = sub(currentSupply, amount);
     }
 
-    function lovequit()
-    external {
-        require(ledger[msg.sender] > 0, INVALID_ADDRESS);
-        uint holdings = ledger[msg.sender];
-        uint exitValue = calcBurnReward(holdings);
-        currentSupply = sub(currentSupply, holdings);
-        contribute(exitValue, msg.sender);
-        ledger[msg.sender] = 0;
-    }
+    // function lovequit()
+    // external {
+    //     require(ledger[msg.sender] > 0, INVALID_ADDRESS);
+    //     uint holdings = ledger[msg.sender];
+    //     uint exitValue = calcBurnReward(holdings);
+    //     currentSupply = sub(currentSupply, holdings);
+    //     contribute(exitValue, msg.sender);
+    //     ledger[msg.sender] = 0;
+    // }
     
+    function 
+
     function contribute(uint amount, address sender)
     internal {
         beneficiary.transfer(amount);

@@ -18,18 +18,15 @@ import "./TokenTemplate.sol";
 contract CcDAO {
     address public creator;
     string public name;
+    uint public totalAvailable;
 
     TokenFactory public tokenFactory;
 
-    uint constant ROLE_OWNER = 40;
-    uint constant ROLE_ADMIN = 30;
-    uint constant ROLE_SUPERVISOR = 20;
-    uint constant ROLE_MEMBER = 1;
-    uint constant ROLE_NOTMEMBER = 0;
-
     string internal constant INSUFFICIENT_PRIVILEGES = "Action requires admin privileges";
+    string internal constant INVALID_TARGET;
 
     mapping(address => uint) roles;
+    mapping(address => uint) allocations;    
 
     constructor(
         TokenFactory _tokenFactory,
@@ -48,28 +45,20 @@ contract CcDAO {
         roles[creator] = ROLE_OWNER;
     }
 
-    /**
-     * @dev join allows an external user to join a DAO as MEMBER.
-     */
-    function join() public {
-        require(roles[msg.sender] == ROLE_NOTMEMBER, "already a member, cannot join");
-
-        roles[msg.sender] = ROLE_MEMBER;
-    }
-
     function addProject(address _project) public {
-        require(roles[msg.sender] == ROLE_ADMIN, INSUFFICIENT_PRIVILEGES);
-
+        require(roles[msg.sender] == ROLE_FACILITATOR, INSUFFICIENT_PRIVILEGES);
+        roles[_project] = ROLE_PROJECT;
     }
 
     /**
      * @dev kickMember allows a member to kick a lower-in-grade member.
      * @param _member the address of the member to kick.
      */
-    function kickMember(address _member) public {
-        require(roles[_member] > ROLE_NOTMEMBER, "not a member, cannot kick");
-        require(roles[msg.sender] > roles[_member], "cannot kick my superiors");
-
+    function kickProject(address _project) public {
+        require(roles[_project] > ROLE_NONE, "not a member, cannot kick");
+        require(roles[_project]) < ROLE_RECIPIENT, 
+        require(roles[msg.sender] > ROLE_PROJECT, INSUFFICIENT_PRIVILEGES);
+        require()
         delete(roles[_member]);
     }
 
