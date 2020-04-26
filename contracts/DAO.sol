@@ -2,9 +2,8 @@ pragma solidity ^0.6.4;
 
 import "./TokenTemplate.sol";
 
-import "@openzeppelin/upgrades/contracts/Initializable.sol";
-import "@openzeppelin/contracts-ethereum-package/contracts/ownership/Ownable.sol";
-import "@openzeppelin/contracts-ethereum-package/contracts/math/SafeMath.sol";
+import "@openzeppelin/contracts/Ownable.sol";
+import "@openzeppelin/contracts/math/SafeMath.sol";
 
 /**
  * @dev Implementation of a DAO (Decentralized Autonomous Organization) for the CommonsHood app.
@@ -18,7 +17,7 @@ import "@openzeppelin/contracts-ethereum-package/contracts/math/SafeMath.sol";
  * ROLE_ADMIN or a ROLE_OWNER. All writing operations can be performed only by users with ROLE_ADMIN
  * or higher.
  */
-contract CcDAO {
+contract CcDAO is Ownable {
     using SafeMath for uint256;
 
     address public creator;
