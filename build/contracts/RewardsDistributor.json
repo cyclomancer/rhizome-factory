@@ -12056,7 +12056,7 @@
   },
   "networks": {},
   "schemaVersion": "3.1.0",
-  "updatedAt": "2020-04-26T12:37:42.373Z",
+  "updatedAt": "2020-04-26T12:44:34.708Z",
   "devdoc": {
     "author": "Bogdan Batog (https://batog.info)",
     "details": "Distribute pro rata rewards (dividends) to token holders in O(1) time.     Based on [1] http://batog.info/papers/scalable-reward-distribution.pdf     And on [2] https://solmaz.io/2019/02/24/scalable-reward-changing/",

@@ -19666,7 +19666,7 @@
   },
   "networks": {},
   "schemaVersion": "3.1.0",
-  "updatedAt": "2020-04-26T12:37:42.357Z",
+  "updatedAt": "2020-04-26T12:44:34.689Z",
   "devdoc": {
     "details": "Implementation of a DAO (Decentralized Autonomous Organization) for the CommonsHood app. * This implementation consists in an organization that have an owner and various members with various roles. The organization is capable of issuing tokens (ERC20 compliant) or Crowdsales. Tokens can be transfered to others accounts or others DAOs. Only members with a role grater than or equal to ROLE_ADMIN can issue new tokens and crowdsales. * Users can join the DAO with the role ROLE_MEMBER. They can be promoted to higher roles only by a ROLE_ADMIN or a ROLE_OWNER. All writing operations can be performed only by users with ROLE_ADMIN or higher.",
     "methods": {}
