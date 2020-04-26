@@ -8,30 +8,32 @@ import "../node_modules/openzeppelin-solidity/contracts/token/ERC20/ERC20Detaile
  * @dev Very simple ERC20 Token that can be minted.
  * It is meant to be used in all crowdsale contracts.
  */
-contract TokenTemplate is ERC20Detailed, ERC20Mintable {
-    event Debug(string _message);
-
+contract TokenTemplate is ERC20 {
+    address public _owner;
     constructor(
         string memory name,
         string memory symbol,
-        uint8 decimals,
         uint256 totalSupply,
         address owner
-    ) ERC20Detailed(name, symbol, decimals) ERC20Mintable() public {
+    ) ERC20(name, symbol) public {
         require(owner != address(0), "Owner must be defined");
-        _logoURL = logoURL;
-        _addMinter(owner);
         if (totalSupply > 0) {
             _mint(owner, totalSupply);
-            _removeMinter(owner);
         }
+        _owner = owner;
     }
 
     /**
      * override of erc20 transfer
      */
-    function transfer(address recipient, uint256 amount) public returns (bool) {
+    function transfer(address recipient, uint256 amount) public override returns (bool) {
         _transfer(_msgSender(), recipient, amount); //call to erc20 standard transfer
         return true;
+    }
+    
+    function mint(address recipient, uint256 amount)
+    public {
+        require(msg.sender == _owner, "Access denied");
+        _mint(recipient, amount);
     }
 }
