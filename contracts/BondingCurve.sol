@@ -9,7 +9,7 @@ contract BondingCurve is DSMath {
     uint public totalContributed;
     uint public totalLocked;
     mapping (address => uint) public ledger;
-    mapping(address => uint) public locked;
+    mapping (address => uint) public locked;
     mapping (address => uint) public contributions;
     mapping (address => uint) public asks;
 
