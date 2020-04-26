@@ -3,7 +3,11 @@
   "version": "0.0.1",
   "description": "",
   "scripts": {
-    "ganache": "ganache-cli -m 'strong bright manual polar gorilla security kiss smart detect essence drastic table'"
+    "ganache": "ganache-cli -m 'strong bright manual polar gorilla security kiss smart detect essence drastic table'",
+    "start": "run-p deploy ganache",
+    "deploy": "run-s wait migrate",
+    "wait": "wait-on tcp:8545",
+    "migrate": "truffle deploy"
   },
   "repository": {
     "type": "git",
