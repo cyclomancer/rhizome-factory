@@ -77,7 +77,7 @@ contract CcDAO {
         allocations[_project] = amount;
     }
 
-    function allocate(address _project) public {
+    function allocate(address payable _project) private {
         uint256 amount = allocations[_project];
         require(amount <= address(this).balance, INSUFFICIENT_FUNDS);
         _project.transfer(amount);

@@ -1,14 +1,12 @@
 pragma solidity ^0.6.4;
 
-import "../node_modules/openzeppelin-solidity/contracts/token/ERC20/ERC20Mintable.sol";
-import "../node_modules/openzeppelin-solidity/contracts/token/ERC20/ERC20Detailed.sol";
-
 /**
  * @title TokenTemplate
  * @dev Very simple ERC20 Token that can be minted.
  * It is meant to be used in all crowdsale contracts.
  */
 contract TokenTemplate is ERC20 {
+    event Debug(string _message);
     address public _owner;
     constructor(
         string memory name,
