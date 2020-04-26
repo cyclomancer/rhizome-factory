@@ -1,17 +1,16 @@
-
-
 pragma solidity ^0.6.4;
+
+import "./DAO.sol";
 
 contract ScenarioBondingCurve is DSMath {
     
     address payable public beneficiary;
+    DAO public rhizome;
     uint public currentSupply;
     uint public totalContributed;
-    uint public totalStaked;
-    uint public stakeLocktime;
-    address[] public stakers;
+    uint public totalLocked;
     mapping (address => uint) public ledger;
-    mapping(address => uint[2]) public stakes;
+    mapping(address => uint) public locked;
     mapping (address => uint) public contributions;
     mapping (address => uint) public asks;
 
@@ -27,9 +26,12 @@ contract ScenarioBondingCurve is DSMath {
     string internal constant ZERO_AMOUNT = "Amount must be nonzero";
     string internal constant TOKENS_LOCKED = "Vesting period for this stake has not elapsed";
 
-    constructor()
+    constructor(
+        address _DAO
+    )
     public {
-        beneficiary = 0x4aB6A3307AEfcC05b9de8Dbf3B0a6DEcEBa320E6;
+        beneficiary = _DAO;
+        rhizome = DAO(_DAO);
         exponent = 2;
         coefficient = 10000000000;
         reserveRatio = wdiv(4, 5);
@@ -69,42 +71,6 @@ contract ScenarioBondingCurve is DSMath {
     //     contribute(exitValue, msg.sender);
     //     ledger[msg.sender] = 0;
     // }
-
-    function lockStake(uint amount)
-    external {
-        require(amount > 0, ZERO_AMOUNT);
-        require(amount <= ledger[msg.sender], INSUFFICIENT_TOKENS);
-        uint newStakeBalance = add(stakes[msg.sender], amount);
-        uint newLedgerBalance = sub(ledger[msg.sender], amount);
-        if (stakes[msg.sender] == 0) {
-            stakers.push(msg.sender);
-        }
-        stakes[msg.sender] = [newStakeBalance, now];
-        ledger[msg.sender] = newLedgerBalance;
-        totalStake += amount;
-    }
-
-    function unlockStake(uint amount)
-    external {
-        require(amount > 0, ZERO_AMOUNT);
-        require(amount <= stakes[msg.sender][0], INSUFFICIENT_TOKENS);
-        require(now >= add(stakes[msg.sender][1], stakeLocktime), TOKENS_LOCKED);
-        uint newStakeBalance = sub(stakes[msg.sender], amount);
-        uint newLedgerBalance = add(ledger[msg.sender], amount);
-        stakes[msg.sender][0] = newStakeBalance;
-        ledger[msg.sender] = newLedgerBalance;
-        totalStake -= amount;
-    }
-
-    function getStake()
-    external {
-        return stakes[msg.sender];
-    }
-
-    function calcProportionalReward(uint available)
-    external {
-        
-    }
 
     function contribute(uint amount, address sender)
     internal {
@@ -151,5 +117,35 @@ contract ScenarioBondingCurve is DSMath {
         uint newSupply = sub(currentSupply, amount);
         uint result = integrate(newSupply, currentSupply, reserveRatio);
         return result;
+    }
+
+    function lockTokens(uint amount)
+    external {
+        require(amount > 0, ZERO_AMOUNT);
+        require(amount <= ledger[msg.sender], INSUFFICIENT_TOKENS);
+        uint newLockBalance = add(locked[msg.sender], amount);
+        uint newLedgerBalance = sub(ledger[msg.sender], amount);
+        locked[msg.sender] = newLockBalance;
+        ledger[msg.sender] = newLedgerBalance;
+        totalLocked += amount;
+        bool success = rhizome.deposit(msg.sender, amount);
+        if (!success) {
+            revert("DAO contract rejected deposit");
+        }
+    }
+
+    function unlockTokens(uint amount)
+    external {
+        require(amount > 0, ZERO_AMOUNT);
+        require(amount <= locked[msg.sender][0], INSUFFICIENT_TOKENS);
+        uint newLockBalance = sub(locked[msg.sender], amount);
+        uint newLedgerBalance = add(ledger[msg.sender], amount);
+        locked[msg.sender] = newLockBalance;
+        ledger[msg.sender] = newLedgerBalance;
+        totalStake -= amount;
+        bool success = rhizome.withdrawStake(msg.sender, amount);
+        if (!success) {
+            revert("DAO contract rejected withdrawal");
+        }
     }
 }
