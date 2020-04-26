@@ -26,6 +26,8 @@ contract BondingCurve is DSMath {
     string internal constant ZERO_AMOUNT = "Amount must be nonzero";
     string internal constant TOKENS_LOCKED = "Vesting period for this stake has not elapsed";
 
+    event TestBuy(uint price, uint reserveValue);
+
     constructor(
         address _DAO
     )
@@ -33,7 +35,7 @@ contract BondingCurve is DSMath {
         beneficiary = payable(_DAO);
         rhizome = CcDAO(_DAO);
         exponent = 2;
-        coefficient = 10000000000;
+        coefficient = 100000000;
         reserveRatio = wdiv(4, 5);
         currentSupply = 1;
     }
@@ -50,6 +52,7 @@ contract BondingCurve is DSMath {
         }
         ledger[msg.sender] = add(ledger[msg.sender], amount);
         currentSupply = add(currentSupply, amount);
+        emit TestBuy(price, reserveValue);
         contribute(contributionValue, msg.sender);
     }
 
@@ -78,7 +81,7 @@ contract BondingCurve is DSMath {
         contributions[sender] = add(contributions[sender], amount);
         totalContributed = add(totalContributed, amount);
     }
-    
+
     function setBuyPrice(uint amount)
     public {
         uint price = calcMintPrice(amount);

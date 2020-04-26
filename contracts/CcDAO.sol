@@ -46,6 +46,9 @@ contract CcDAO {
     string internal constant INSUFFICIENT_TOKENS = "Withdrawal exceeds amount of tokens locked";
     string internal constant NOT_FOUND = "Entity not found";
 
+    event Project(address _project, uint _amount);
+    event Allocation(address _project, uint _amount);
+
     constructor(
         string memory _name,
         address _creator
@@ -63,16 +66,17 @@ contract CcDAO {
         roles[creator] = ROLE_FACILITATOR;
 
         RhizomeRewards = new TokenTemplate('Rhizome', 'RHR', 0, msg.sender);
-        BondingCurve RhizomeCurve = new BondingCurve(address(this));
     }
 
     fallback() external {}
 
-    function addProject(address _project, uint256 amount) public {
+    function addProject(address _project, uint256 amount) 
+    public {
         require(roles[msg.sender] == ROLE_FACILITATOR, INSUFFICIENT_PRIVILEGES);
         require(amount <= address(this).balance, INSUFFICIENT_FUNDS);
         roles[_project] = ROLE_PROJECT;
         allocations[_project] = amount;
+        emit Project(_project, amount);
     }
 
     function updateAllocation(address _project, uint256 amount) public {
@@ -81,13 +85,14 @@ contract CcDAO {
         allocations[_project] = amount;
     }
 
-    function allocate(address payable _project) private {
+    function allocate(address payable _project) public {
         uint256 amount = allocations[_project];
         require(amount <= address(this).balance, INSUFFICIENT_FUNDS);
         _project.transfer(amount);
         disbursed[_project] = amount;
         delete(allocations[_project]);
         roles[_project] = ROLE_RECIPIENT;
+        emit Allocation(_project, amount);
     }
 
     function validate(address _project)

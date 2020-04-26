@@ -1,4 +1,5 @@
 const CcDAO = artifacts.require("CcDAO");
+const BondingCurve = artifacts.require("BondingCurve");
 const ethers = require('ethers');
 
 const mnemonic = "strong bright manual polar gorilla security kiss smart detect essence drastic table"
@@ -8,5 +9,7 @@ const wallet = bareWallet.connect(provider)
 module.exports = function(deployer) {
   console.log('deploy')
   // deployment steps
-  return wallet.getAddress().then(address => deployer.deploy(CcDAO, "Rhizome", address))
+  return wallet.getAddress().then(address => deployer.deploy(CcDAO, "Rhizome", address).then(contract => {
+    deployer.deploy(BondingCurve, contract.address)
+  }))
 }

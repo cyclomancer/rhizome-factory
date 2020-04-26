@@ -1,0 +1,21 @@
+{
+  "contracts": {},
+  "solidityLibs": {},
+  "proxies": {
+    "rhizome-factory/CcDAO": [
+      {
+        "address": "0x91b517a3e90396Ea5ab143434dDa12B6a678F0Cc",
+        "kind": "NonProxy",
+        "bytecodeHash": "0685a3ba8f1f38c739bf5d2343851a822b873a19a4ee41495ff341f309dc1eb7"
+      }
+    ],
+    "rhizome-factory/BondingCurve": [
+      {
+        "address": "0x6070eF9cFB6B1E70aAc4579216AC6beAaE83c624",
+        "kind": "NonProxy",
+        "bytecodeHash": "2adf28d63c3db1782b8b21b4028ec6f8be2d12f191267b3f1e0a1ba0ddfd3b83"
+      }
+    ]
+  },
+  "manifestVersion": "2.2"
+}
