@@ -43,6 +43,8 @@ contract CcDAO {
     string internal constant INSUFFICIENT_PRIVILEGES = "Action requires admin privileges";
     string internal constant INVALID_TARGET = "Amount must be nonzero";
     string internal constant INSUFFICIENT_FUNDS = "Allocation exceeds available funds";
+    string internal constant INSUFFICIENT_TOKENS = "Withdrawal exceeds amount of tokens locked";
+    string internal constant NOT_FOUND = "Entity not found";
 
     constructor(
         string memory _name,
@@ -86,7 +88,7 @@ contract CcDAO {
     }
 
     function kickProject(address _project) public {
-        require(roles[_project] > ROLE_NONE, "not a member, cannot kick");
+        require(roles[_project] > ROLE_NONE, NOT_FOUND);
         require(roles[_project] < ROLE_RECIPIENT, "Project has already been funded");
         require(roles[msg.sender] > ROLE_PROJECT, INSUFFICIENT_PRIVILEGES);
         delete(roles[_project]);
@@ -136,7 +138,7 @@ contract CcDAO {
     }
 
     /// @notice Withdraw accumulated reward for the staker address.
-    function withdrawReward() public returns (uint256 tokens) {
+    function withdrawReward() public {
         uint256 _reward = getReward(msg.sender);
 
         // refresh reward offset (so a new call to getReward returns 0)
@@ -149,7 +151,7 @@ contract CcDAO {
     function withdrawStake(address staker, uint256 tokens) public returns (bool) {
         uint256 _currentStake = getStake(staker);
 
-        require(tokens <= _currentStake);
+        require(tokens <= _currentStake, INSUFFICIENT_TOKENS);
 
         // update stake and remainder for this address
         uint256 _newStake = _currentStake.sub(tokens);
