@@ -1,11 +1,11 @@
 pragma solidity ^0.6.4;
 
 import "./DAO.sol";
+import "./DSMath.sol";
 
-contract ScenarioBondingCurve is DSMath {
-    
+contract BondingCurve is DSMath {
     address payable public beneficiary;
-    DAO public rhizome;
+    CcDAO public rhizome;
     uint public currentSupply;
     uint public totalContributed;
     uint public totalLocked;
@@ -30,8 +30,8 @@ contract ScenarioBondingCurve is DSMath {
         address _DAO
     )
     public {
-        beneficiary = _DAO;
-        rhizome = DAO(_DAO);
+        beneficiary = payable(_DAO);
+        rhizome = CcDAO(_DAO);
         exponent = 2;
         coefficient = 10000000000;
         reserveRatio = wdiv(4, 5);
@@ -119,7 +119,7 @@ contract ScenarioBondingCurve is DSMath {
         return result;
     }
 
-    function lockTokens(uint256 amount)
+    function lockTokens(uint amount)
     external {
         require(amount > 0, ZERO_AMOUNT);
         require(amount <= ledger[msg.sender], INSUFFICIENT_TOKENS);
@@ -134,15 +134,15 @@ contract ScenarioBondingCurve is DSMath {
         }
     }
 
-    function unlockTokens(uint256 amount)
+    function unlockTokens(uint amount)
     external {
         require(amount > 0, ZERO_AMOUNT);
-        require(amount <= locked[msg.sender][0], INSUFFICIENT_TOKENS);
+        require(amount <= locked[msg.sender], INSUFFICIENT_TOKENS);
         uint newLockBalance = sub(locked[msg.sender], amount);
         uint newLedgerBalance = add(ledger[msg.sender], amount);
         locked[msg.sender] = newLockBalance;
         ledger[msg.sender] = newLedgerBalance;
-        totalStake -= amount;
+        totalLocked -= amount;
         bool success = rhizome.withdrawStake(msg.sender, amount);
         if (!success) {
             revert("DAO contract rejected withdrawal");

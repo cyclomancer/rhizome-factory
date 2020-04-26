@@ -1,0 +1,14 @@
+{
+  "contracts": {},
+  "solidityLibs": {},
+  "proxies": {
+    "rhizome-factory/CcDAO": [
+      {
+        "address": "0x666EF4f79C791B444E2BFf36a16A3f978e10AA4B",
+        "kind": "NonProxy",
+        "bytecodeHash": "d2a6fdf709b0a7060a9ded223da676b379484d79aa13951a9e5bbe240d0b8998"
+      }
+    ]
+  },
+  "manifestVersion": "2.2"
+}

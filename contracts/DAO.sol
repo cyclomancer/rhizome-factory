@@ -1,6 +1,7 @@
 pragma solidity ^0.6.4;
 
 import "./TokenTemplate.sol";
+import "./BondingCurve.sol";
 import "@openzeppelin/contracts/math/SafeMath.sol";
 
 /**
@@ -76,7 +77,7 @@ contract CcDAO {
         allocations[_project] = amount;
     }
 
-    function allocate(address _project) public {
+    function allocate(address payable _project) private {
         uint256 amount = allocations[_project];
         require(amount <= address(this).balance, INSUFFICIENT_FUNDS);
         _project.transfer(amount);

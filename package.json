@@ -1,0 +1,26 @@
+{
+  "name": "rhizome-factory",
+  "version": "0.0.1",
+  "description": "",
+  "scripts": {
+    "ganache": "ganache-cli -m 'strong bright manual polar gorilla security kiss smart detect essence drastic table'"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cyclomancer/rhizome-factory.git"
+  },
+  "author": "Meme Wizard Gang",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/cyclomancer/rhizome-factory/issues"
+  },
+  "homepage": "https://github.com/cyclomancer/rhizome-factory#readme",
+  "dependencies": {
+    "@openzeppelin/cli": "^2.8.2",
+    "@openzeppelin/contracts": "^3.0.0",
+    "ganache-cli": "^6.9.1",
+    "npm-run-all": "^4.1.5",
+    "truffle": "^5.1.23",
+    "wait-on": "^4.0.2"
+  }
+}

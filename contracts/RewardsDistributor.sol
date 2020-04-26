@@ -54,7 +54,7 @@ contract RewardsDistributor is Ownable {
 
     /// Initialize the contract.
     /// @param owner Contract owner, can call functions that change state.
-    constructor(address owner) public Ownable {
+    constructor(address owner) public Ownable() {
         _stakeTotal = 0;
         _rewardTotal = 0;
         _rewardRemainder = 0;
