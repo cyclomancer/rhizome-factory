@@ -18,14 +18,14 @@ import "@openzeppelin/contracts/math/SafeMath.sol";
  */
 contract CcDAO {
     using SafeMath for uint256;
-    
-    address public creator;
     string public name;
-
+    address public creator;
     TokenTemplate public RhizomeRewards;
 
     mapping(address => uint) roles;
     mapping(address => uint) allocations;
+    mapping(address => uint) disbursed;
+    mapping(address => uint) validated;
 
     uint256 public constant ELIGIBLE_UNIT = 10 ** 9;
     mapping(address => uint256) internal _stake;
@@ -66,6 +66,8 @@ contract CcDAO {
         BondingCurve RhizomeCurve = new BondingCurve(address(this));
     }
 
+    fallback() external {}
+
     function addProject(address _project, uint256 amount) public {
         require(roles[msg.sender] == ROLE_FACILITATOR, INSUFFICIENT_PRIVILEGES);
         require(amount <= address(this).balance, INSUFFICIENT_FUNDS);
@@ -83,8 +85,18 @@ contract CcDAO {
         uint256 amount = allocations[_project];
         require(amount <= address(this).balance, INSUFFICIENT_FUNDS);
         _project.transfer(amount);
-        allocations[_project] = 0;
+        disbursed[_project] = amount;
+        delete(allocations[_project]);
         roles[_project] = ROLE_RECIPIENT;
+    }
+
+    function validate(address _project)
+    external {
+        require(roles[_project] == ROLE_RECIPIENT, "Invalid target");
+        uint256 rewards = disbursed[_project];
+        distribute(rewards);
+        validated[_project] = disbursed[_project];
+        delete(disbursed[_project]);
     }
 
     function kickProject(address _project) public {
@@ -93,6 +105,10 @@ contract CcDAO {
         require(roles[msg.sender] > ROLE_PROJECT, INSUFFICIENT_PRIVILEGES);
         delete(roles[_project]);
         delete(allocations[_project]);
+    }
+
+    function addFacilitator(address _admin) public {
+        roles[_admin] = ROLE_FACILITATOR;
     }
 
     function deposit(address staker, uint256 tokens) public returns (bool success) {
@@ -116,8 +132,7 @@ contract CcDAO {
     }
 
     /// @notice Distribute tokens pro rata to all stakers.
-    function distribute(address project) internal returns (bool success) {
-        uint256 rewards = allocations[project];
+    function distribute(uint256 rewards) internal returns (bool success) {
         /////
         // add past distribution remainder
         uint256 _amountToDistribute = rewards.add(_rewardRemainder);

@@ -1,5 +1,10 @@
 {
+  "fileName": "Context.sol",
   "contractName": "Context",
+  "source": "pragma solidity ^0.6.0;\n\n/*\n * @dev Provides information about the current execution context, including the\n * sender of the transaction and its data. While these are generally available\n * via msg.sender and msg.data, they should not be accessed in such a direct\n * manner, since when dealing with GSN meta-transactions the account sending and\n * paying for execution may not be the actual sender (as far as an application\n * is concerned).\n *\n * This contract is only required for intermediate, library-like contracts.\n */\ncontract Context {\n    // Empty internal constructor, to prevent people from mistakenly deploying\n    // an instance of this contract, which should be used via inheritance.\n    constructor () internal { }\n\n    function _msgSender() internal view virtual returns (address payable) {\n        return msg.sender;\n    }\n\n    function _msgData() internal view virtual returns (bytes memory) {\n        this; // silence state mutability warning without generating bytecode - see https://github.com/ethereum/solidity/issues/2691\n        return msg.data;\n    }\n}\n",
+  "sourcePath": "@openzeppelin/contracts/GSN/Context.sol",
+  "sourceMap": "",
+  "deployedSourceMap": "",
   "abi": [
     {
       "inputs": [],
@@ -7,17 +12,11 @@
       "type": "constructor"
     }
   ],
-  "metadata": "{\"compiler\":{\"version\":\"0.6.4+commit.1dca32f3\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"constructor\"}],\"devdoc\":{\"methods\":{}},\"userdoc\":{\"methods\":{}}},\"settings\":{\"compilationTarget\":{\"@openzeppelin/contracts/GSN/Context.sol\":\"Context\"},\"evmVersion\":\"istanbul\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":false,\"runs\":200},\"remappings\":[]},\"sources\":{\"@openzeppelin/contracts/GSN/Context.sol\":{\"keccak256\":\"0x0de74dfa6b37943c1b834cbd8fb7a8d052e5ff80c7adb33692102dd6cd2985e9\",\"urls\":[\"bzz-raw://9d2d827fcf4a838f5821732c0acd6a40d21c2a5a2cfe2563feec91465f47bb60\",\"dweb:/ipfs/Qmex3wMKf5Sghbfvr288RUg1kP2uAyTMf11w83WbMbpQQc\"]}},\"version\":1}",
-  "bytecode": "0x",
-  "deployedBytecode": "0x",
-  "sourceMap": "",
-  "deployedSourceMap": "",
-  "source": "pragma solidity ^0.6.0;\n\n/*\n * @dev Provides information about the current execution context, including the\n * sender of the transaction and its data. While these are generally available\n * via msg.sender and msg.data, they should not be accessed in such a direct\n * manner, since when dealing with GSN meta-transactions the account sending and\n * paying for execution may not be the actual sender (as far as an application\n * is concerned).\n *\n * This contract is only required for intermediate, library-like contracts.\n */\ncontract Context {\n    // Empty internal constructor, to prevent people from mistakenly deploying\n    // an instance of this contract, which should be used via inheritance.\n    constructor () internal { }\n\n    function _msgSender() internal view virtual returns (address payable) {\n        return msg.sender;\n    }\n\n    function _msgData() internal view virtual returns (bytes memory) {\n        this; // silence state mutability warning without generating bytecode - see https://github.com/ethereum/solidity/issues/2691\n        return msg.data;\n    }\n}\n",
-  "sourcePath": "@openzeppelin/contracts/GSN/Context.sol",
   "ast": {
     "absolutePath": "@openzeppelin/contracts/GSN/Context.sol",
     "exportedSymbols": {
       "Context": [
+<<<<<<< HEAD
         2144
       ]
     },
@@ -314,6 +313,16 @@
     "nodes": [
       {
         "id": 2119,
+=======
+        26
+      ]
+    },
+    "id": 27,
+    "nodeType": "SourceUnit",
+    "nodes": [
+      {
+        "id": 1,
+>>>>>>> 8940b399c3d20feb1ac5b7feeedae64a9647b3f8
         "literals": [
           "solidity",
           "^",
@@ -321,7 +330,11 @@
           ".0"
         ],
         "nodeType": "PragmaDirective",
+<<<<<<< HEAD
         "src": "0:23:6"
+=======
+        "src": "0:23:0"
+>>>>>>> 8940b399c3d20feb1ac5b7feeedae64a9647b3f8
       },
       {
         "abstract": false,
@@ -330,15 +343,22 @@
         "contractKind": "contract",
         "documentation": null,
         "fullyImplemented": true,
+<<<<<<< HEAD
         "id": 2144,
         "linearizedBaseContracts": [
           2144
+=======
+        "id": 26,
+        "linearizedBaseContracts": [
+          26
+>>>>>>> 8940b399c3d20feb1ac5b7feeedae64a9647b3f8
         ],
         "name": "Context",
         "nodeType": "ContractDefinition",
         "nodes": [
           {
             "body": {
+<<<<<<< HEAD
               "id": 2122,
               "nodeType": "Block",
               "src": "726:3:6",
@@ -346,6 +366,15 @@
             },
             "documentation": null,
             "id": 2123,
+=======
+              "id": 4,
+              "nodeType": "Block",
+              "src": "726:3:0",
+              "statements": []
+            },
+            "documentation": null,
+            "id": 5,
+>>>>>>> 8940b399c3d20feb1ac5b7feeedae64a9647b3f8
             "implemented": true,
             "kind": "constructor",
             "modifiers": [],
@@ -353,6 +382,7 @@
             "nodeType": "FunctionDefinition",
             "overrides": null,
             "parameters": {
+<<<<<<< HEAD
               "id": 2120,
               "nodeType": "ParameterList",
               "parameters": [],
@@ -366,33 +396,66 @@
             },
             "scope": 2144,
             "src": "702:27:6",
+=======
+              "id": 2,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "714:2:0"
+            },
+            "returnParameters": {
+              "id": 3,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "726:0:0"
+            },
+            "scope": 26,
+            "src": "702:27:0",
+>>>>>>> 8940b399c3d20feb1ac5b7feeedae64a9647b3f8
             "stateMutability": "nonpayable",
             "virtual": false,
             "visibility": "internal"
           },
           {
             "body": {
+<<<<<<< HEAD
               "id": 2131,
               "nodeType": "Block",
               "src": "805:34:6",
+=======
+              "id": 13,
+              "nodeType": "Block",
+              "src": "805:34:0",
+>>>>>>> 8940b399c3d20feb1ac5b7feeedae64a9647b3f8
               "statements": [
                 {
                   "expression": {
                     "argumentTypes": null,
                     "expression": {
                       "argumentTypes": null,
+<<<<<<< HEAD
                       "id": 2128,
+=======
+                      "id": 10,
+>>>>>>> 8940b399c3d20feb1ac5b7feeedae64a9647b3f8
                       "name": "msg",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [],
                       "referencedDeclaration": -15,
+<<<<<<< HEAD
                       "src": "822:3:6",
+=======
+                      "src": "822:3:0",
+>>>>>>> 8940b399c3d20feb1ac5b7feeedae64a9647b3f8
                       "typeDescriptions": {
                         "typeIdentifier": "t_magic_message",
                         "typeString": "msg"
                       }
                     },
+<<<<<<< HEAD
                     "id": 2129,
+=======
+                    "id": 11,
+>>>>>>> 8940b399c3d20feb1ac5b7feeedae64a9647b3f8
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
@@ -400,21 +463,36 @@
                     "memberName": "sender",
                     "nodeType": "MemberAccess",
                     "referencedDeclaration": null,
+<<<<<<< HEAD
                     "src": "822:10:6",
+=======
+                    "src": "822:10:0",
+>>>>>>> 8940b399c3d20feb1ac5b7feeedae64a9647b3f8
                     "typeDescriptions": {
                       "typeIdentifier": "t_address_payable",
                       "typeString": "address payable"
                     }
                   },
+<<<<<<< HEAD
                   "functionReturnParameters": 2127,
                   "id": 2130,
                   "nodeType": "Return",
                   "src": "815:17:6"
+=======
+                  "functionReturnParameters": 9,
+                  "id": 12,
+                  "nodeType": "Return",
+                  "src": "815:17:0"
+>>>>>>> 8940b399c3d20feb1ac5b7feeedae64a9647b3f8
                 }
               ]
             },
             "documentation": null,
+<<<<<<< HEAD
             "id": 2132,
+=======
+            "id": 14,
+>>>>>>> 8940b399c3d20feb1ac5b7feeedae64a9647b3f8
             "implemented": true,
             "kind": "function",
             "modifiers": [],
@@ -422,6 +500,7 @@
             "nodeType": "FunctionDefinition",
             "overrides": null,
             "parameters": {
+<<<<<<< HEAD
               "id": 2124,
               "nodeType": "ParameterList",
               "parameters": [],
@@ -429,16 +508,34 @@
             },
             "returnParameters": {
               "id": 2127,
+=======
+              "id": 6,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "754:2:0"
+            },
+            "returnParameters": {
+              "id": 9,
+>>>>>>> 8940b399c3d20feb1ac5b7feeedae64a9647b3f8
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
+<<<<<<< HEAD
                   "id": 2126,
                   "name": "",
                   "nodeType": "VariableDeclaration",
                   "overrides": null,
                   "scope": 2132,
                   "src": "788:15:6",
+=======
+                  "id": 8,
+                  "name": "",
+                  "nodeType": "VariableDeclaration",
+                  "overrides": null,
+                  "scope": 14,
+                  "src": "788:15:0",
+>>>>>>> 8940b399c3d20feb1ac5b7feeedae64a9647b3f8
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -446,10 +543,17 @@
                     "typeString": "address payable"
                   },
                   "typeName": {
+<<<<<<< HEAD
                     "id": 2125,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
                     "src": "788:15:6",
+=======
+                    "id": 7,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "788:15:0",
+>>>>>>> 8940b399c3d20feb1ac5b7feeedae64a9647b3f8
                     "stateMutability": "payable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address_payable",
@@ -460,28 +564,46 @@
                   "visibility": "internal"
                 }
               ],
+<<<<<<< HEAD
               "src": "787:17:6"
             },
             "scope": 2144,
             "src": "735:104:6",
+=======
+              "src": "787:17:0"
+            },
+            "scope": 26,
+            "src": "735:104:0",
+>>>>>>> 8940b399c3d20feb1ac5b7feeedae64a9647b3f8
             "stateMutability": "view",
             "virtual": true,
             "visibility": "internal"
           },
           {
             "body": {
+<<<<<<< HEAD
               "id": 2142,
               "nodeType": "Block",
               "src": "910:165:6",
+=======
+              "id": 24,
+              "nodeType": "Block",
+              "src": "910:165:0",
+>>>>>>> 8940b399c3d20feb1ac5b7feeedae64a9647b3f8
               "statements": [
                 {
                   "expression": {
                     "argumentTypes": null,
+<<<<<<< HEAD
                     "id": 2137,
+=======
+                    "id": 19,
+>>>>>>> 8940b399c3d20feb1ac5b7feeedae64a9647b3f8
                     "name": "this",
                     "nodeType": "Identifier",
                     "overloadedDeclarations": [],
                     "referencedDeclaration": -28,
+<<<<<<< HEAD
                     "src": "920:4:6",
                     "typeDescriptions": {
                       "typeIdentifier": "t_contract$_Context_$2144",
@@ -491,24 +613,47 @@
                   "id": 2138,
                   "nodeType": "ExpressionStatement",
                   "src": "920:4:6"
+=======
+                    "src": "920:4:0",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_contract$_Context_$26",
+                      "typeString": "contract Context"
+                    }
+                  },
+                  "id": 20,
+                  "nodeType": "ExpressionStatement",
+                  "src": "920:4:0"
+>>>>>>> 8940b399c3d20feb1ac5b7feeedae64a9647b3f8
                 },
                 {
                   "expression": {
                     "argumentTypes": null,
                     "expression": {
                       "argumentTypes": null,
+<<<<<<< HEAD
                       "id": 2139,
+=======
+                      "id": 21,
+>>>>>>> 8940b399c3d20feb1ac5b7feeedae64a9647b3f8
                       "name": "msg",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [],
                       "referencedDeclaration": -15,
+<<<<<<< HEAD
                       "src": "1060:3:6",
+=======
+                      "src": "1060:3:0",
+>>>>>>> 8940b399c3d20feb1ac5b7feeedae64a9647b3f8
                       "typeDescriptions": {
                         "typeIdentifier": "t_magic_message",
                         "typeString": "msg"
                       }
                     },
+<<<<<<< HEAD
                     "id": 2140,
+=======
+                    "id": 22,
+>>>>>>> 8940b399c3d20feb1ac5b7feeedae64a9647b3f8
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
@@ -516,21 +661,36 @@
                     "memberName": "data",
                     "nodeType": "MemberAccess",
                     "referencedDeclaration": null,
+<<<<<<< HEAD
                     "src": "1060:8:6",
+=======
+                    "src": "1060:8:0",
+>>>>>>> 8940b399c3d20feb1ac5b7feeedae64a9647b3f8
                     "typeDescriptions": {
                       "typeIdentifier": "t_bytes_calldata_ptr",
                       "typeString": "bytes calldata"
                     }
                   },
+<<<<<<< HEAD
                   "functionReturnParameters": 2136,
                   "id": 2141,
                   "nodeType": "Return",
                   "src": "1053:15:6"
+=======
+                  "functionReturnParameters": 18,
+                  "id": 23,
+                  "nodeType": "Return",
+                  "src": "1053:15:0"
+>>>>>>> 8940b399c3d20feb1ac5b7feeedae64a9647b3f8
                 }
               ]
             },
             "documentation": null,
+<<<<<<< HEAD
             "id": 2143,
+=======
+            "id": 25,
+>>>>>>> 8940b399c3d20feb1ac5b7feeedae64a9647b3f8
             "implemented": true,
             "kind": "function",
             "modifiers": [],
@@ -538,6 +698,7 @@
             "nodeType": "FunctionDefinition",
             "overrides": null,
             "parameters": {
+<<<<<<< HEAD
               "id": 2133,
               "nodeType": "ParameterList",
               "parameters": [],
@@ -545,16 +706,34 @@
             },
             "returnParameters": {
               "id": 2136,
+=======
+              "id": 15,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "862:2:0"
+            },
+            "returnParameters": {
+              "id": 18,
+>>>>>>> 8940b399c3d20feb1ac5b7feeedae64a9647b3f8
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
+<<<<<<< HEAD
                   "id": 2135,
                   "name": "",
                   "nodeType": "VariableDeclaration",
                   "overrides": null,
                   "scope": 2143,
                   "src": "896:12:6",
+=======
+                  "id": 17,
+                  "name": "",
+                  "nodeType": "VariableDeclaration",
+                  "overrides": null,
+                  "scope": 25,
+                  "src": "896:12:0",
+>>>>>>> 8940b399c3d20feb1ac5b7feeedae64a9647b3f8
                   "stateVariable": false,
                   "storageLocation": "memory",
                   "typeDescriptions": {
@@ -562,10 +741,17 @@
                     "typeString": "bytes"
                   },
                   "typeName": {
+<<<<<<< HEAD
                     "id": 2134,
                     "name": "bytes",
                     "nodeType": "ElementaryTypeName",
                     "src": "896:5:6",
+=======
+                    "id": 16,
+                    "name": "bytes",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "896:5:0",
+>>>>>>> 8940b399c3d20feb1ac5b7feeedae64a9647b3f8
                     "typeDescriptions": {
                       "typeIdentifier": "t_bytes_storage_ptr",
                       "typeString": "bytes"
@@ -575,23 +761,41 @@
                   "visibility": "internal"
                 }
               ],
+<<<<<<< HEAD
               "src": "895:14:6"
             },
             "scope": 2144,
             "src": "845:230:6",
+=======
+              "src": "895:14:0"
+            },
+            "scope": 26,
+            "src": "845:230:0",
+>>>>>>> 8940b399c3d20feb1ac5b7feeedae64a9647b3f8
             "stateMutability": "view",
             "virtual": true,
             "visibility": "internal"
           }
         ],
+<<<<<<< HEAD
         "scope": 2145,
         "src": "525:552:6"
       }
     ],
     "src": "0:1078:6"
+=======
+        "scope": 27,
+        "src": "525:552:0"
+      }
+    ],
+    "src": "0:1078:0"
+>>>>>>> 8940b399c3d20feb1ac5b7feeedae64a9647b3f8
   },
+  "bytecode": "0x",
+  "deployedBytecode": "0x",
   "compiler": {
     "name": "solc",
+<<<<<<< HEAD
     "version": "0.6.4+commit.1dca32f3.Emscripten.clang"
   },
   "networks": {},
@@ -599,8 +803,14 @@
   "updatedAt": "2020-04-26T07:02:40.994Z",
   "devdoc": {
     "methods": {}
+=======
+    "version": "0.6.4+commit.1dca32f3.Emscripten.clang",
+    "optimizer": {
+      "enabled": false,
+      "runs": 200
+    },
+    "evmVersion": "petersburg"
+>>>>>>> 8940b399c3d20feb1ac5b7feeedae64a9647b3f8
   },
-  "userdoc": {
-    "methods": {}
-  }
+  "networks": {}
 }

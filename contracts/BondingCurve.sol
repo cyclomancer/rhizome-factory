@@ -134,7 +134,7 @@ contract BondingCurve is DSMath {
         }
     }
 
-    function unlockTokens(uint amount)
+    function unlockTokens(uint256 amount)
     external {
         require(amount > 0, ZERO_AMOUNT);
         require(amount <= locked[msg.sender], INSUFFICIENT_TOKENS);
