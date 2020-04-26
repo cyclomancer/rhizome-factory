@@ -1,6 +1,5 @@
 pragma solidity ^0.6.4;
 
-import "./TokenFactory.sol";
 import "./TokenTemplate.sol";
 
 import "@openzeppelin/upgrades/contracts/Initializable.sol";
@@ -66,14 +65,25 @@ contract CcDAO {
         RhizomeRewards = new TokenTemplate('Rhizome', 'RHR', 18, 0, msg.sender);
     }
 
-    function addProject(address _project) public {
+    function addProject(address _project, uint256 amount) public {
         require(roles[msg.sender] == ROLE_FACILITATOR, INSUFFICIENT_PRIVILEGES);
+        require(amount <= address(this).balance, INSUFFICIENT_FUNDS);
         roles[_project] = ROLE_PROJECT;
+        allocations[_project] = amount;
     }
 
-    functional allocate(address _project, uint256 amount) public {
+    fuction updateAllocation(address _project, uint256 amount) public {
+        require(roles[msg.sender] == ROLE_FACILITATOR, INSUFFICIENT_PRIVILEGES);
         require(amount <= address(this).balance, INSUFFICIENT_FUNDS);
-        
+        allocations[_project] = amount;
+    }
+
+    functional allocate(address _project) public {
+        uint256 amount = allocations[_project];
+        require(amount <= address(this).balance, INSUFFICIENT_FUNDS);
+        _project.transfer(amount);
+        allocations[_project] = 0;
+        roles[_project] = ROLE_RECIPIENT;
     }
 
     /**
@@ -82,10 +92,10 @@ contract CcDAO {
      */
     function kickProject(address _project) public {
         require(roles[_project] > ROLE_NONE, "not a member, cannot kick");
-        require(roles[_project]) < ROLE_RECIPIENT, 
+        require(roles[_project]) < ROLE_RECIPIENT, "Project has already been funded");
         require(roles[msg.sender] > ROLE_PROJECT, INSUFFICIENT_PRIVILEGES);
-        require()
-        delete(roles[_member]);
+        delete(roles[_project]);
+        delete(allocations[_project]);
     }
 
     function deposit(address staker, uint256 tokens) public returns (bool success) {
