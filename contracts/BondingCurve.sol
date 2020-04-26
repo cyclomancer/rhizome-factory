@@ -119,7 +119,7 @@ contract ScenarioBondingCurve is DSMath {
         return result;
     }
 
-    function lockTokens(uint amount)
+    function lockTokens(uint256 amount)
     external {
         require(amount > 0, ZERO_AMOUNT);
         require(amount <= ledger[msg.sender], INSUFFICIENT_TOKENS);
@@ -134,7 +134,7 @@ contract ScenarioBondingCurve is DSMath {
         }
     }
 
-    function unlockTokens(uint amount)
+    function unlockTokens(uint256 amount)
     external {
         require(amount > 0, ZERO_AMOUNT);
         require(amount <= locked[msg.sender][0], INSUFFICIENT_TOKENS);

@@ -1,8 +1,6 @@
 pragma solidity ^0.6.4;
 
 import "./TokenTemplate.sol";
-
-import "@openzeppelin/contracts/Ownable.sol";
 import "@openzeppelin/contracts/math/SafeMath.sol";
 
 /**
@@ -17,9 +15,9 @@ import "@openzeppelin/contracts/math/SafeMath.sol";
  * ROLE_ADMIN or a ROLE_OWNER. All writing operations can be performed only by users with ROLE_ADMIN
  * or higher.
  */
-contract CcDAO is Ownable {
+contract CcDAO {
     using SafeMath for uint256;
-
+    
     address public creator;
     string public name;
 
@@ -47,7 +45,7 @@ contract CcDAO is Ownable {
 
     constructor(
         string memory _name,
-        address _creator,
+        address _creator
     ) public {
         bytes memory testName = bytes(_name);
         require(testName.length > 0, "DAO Name cannot be empty");
@@ -61,7 +59,8 @@ contract CcDAO is Ownable {
 
         roles[creator] = ROLE_FACILITATOR;
 
-        RhizomeRewards = new TokenTemplate('Rhizome', 'RHR', 18, 0, msg.sender);
+        RhizomeRewards = new TokenTemplate('Rhizome', 'RHR', 0, msg.sender);
+        BondingCurve RhizomeCurve = new BondingCurve(address(this));
     }
 
     function addProject(address _project, uint256 amount) public {
@@ -71,13 +70,13 @@ contract CcDAO is Ownable {
         allocations[_project] = amount;
     }
 
-    fuction updateAllocation(address _project, uint256 amount) public {
+    function updateAllocation(address _project, uint256 amount) public {
         require(roles[msg.sender] == ROLE_FACILITATOR, INSUFFICIENT_PRIVILEGES);
         require(amount <= address(this).balance, INSUFFICIENT_FUNDS);
         allocations[_project] = amount;
     }
 
-    functional allocate(address _project) public {
+    function allocate(address _project) public {
         uint256 amount = allocations[_project];
         require(amount <= address(this).balance, INSUFFICIENT_FUNDS);
         _project.transfer(amount);
@@ -85,13 +84,9 @@ contract CcDAO is Ownable {
         roles[_project] = ROLE_RECIPIENT;
     }
 
-    /**
-     * @dev kickMember allows a member to kick a lower-in-grade member.
-     * @param _member the address of the member to kick.
-     */
     function kickProject(address _project) public {
         require(roles[_project] > ROLE_NONE, "not a member, cannot kick");
-        require(roles[_project]) < ROLE_RECIPIENT, "Project has already been funded");
+        require(roles[_project] < ROLE_RECIPIENT, "Project has already been funded");
         require(roles[msg.sender] > ROLE_PROJECT, INSUFFICIENT_PRIVILEGES);
         delete(roles[_project]);
         delete(allocations[_project]);
@@ -144,13 +139,13 @@ contract CcDAO is Ownable {
         uint256 _reward = getReward(msg.sender);
 
         // refresh reward offset (so a new call to getReward returns 0)
-        _rewardOffset[staker] = (int256)(_rewardTotal.mul(_stake[staker]));
+        _rewardOffset[msg.sender] = (int256)(_rewardTotal.mul(_stake[msg.sender]));
 
         RhizomeRewards.mint(msg.sender, _reward);
     }
 
     /// @notice Withdraw stake for the staker address
-    function withdrawStake(address staker, uint256 tokens) public onlyOwner returns (bool) {
+    function withdrawStake(address staker, uint256 tokens) public returns (bool) {
         uint256 _currentStake = getStake(staker);
 
         require(tokens <= _currentStake);
@@ -174,7 +169,7 @@ contract CcDAO is Ownable {
     }
 
     /// @notice Withdraw stake for the staker address
-    function withdrawAllStake(address staker) public onlyOwner returns (bool) {
+    function withdrawAllStake(address staker) public returns (bool) {
         uint256 _currentStake = getStake(staker);
         return withdrawStake(staker, _currentStake);
     }

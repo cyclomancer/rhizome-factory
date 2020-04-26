@@ -1,7 +1,7 @@
 pragma solidity ^0.6.4;
 
-import "../node_modules/openzeppelin-solidity/contracts/token/ERC20/ERC20Mintable.sol";
-import "../node_modules/openzeppelin-solidity/contracts/token/ERC20/ERC20Detailed.sol";
+import "openzeppelin-solidity/contracts/token/ERC20/ERC20Mintable.sol";
+import "openzeppelin-solidity/contracts/token/ERC20/ERC20Detailed.sol";
 
 /**
  * @title TokenTemplate

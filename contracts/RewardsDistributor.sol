@@ -1,8 +1,7 @@
-pragma solidity ^0.5.6;
+pragma solidity ^0.6.4;
 
-import "@openzeppelin/upgrades/contracts/Initializable.sol";
-import "@openzeppelin/contracts-ethereum-package/contracts/ownership/Ownable.sol";
-import "@openzeppelin/contracts-ethereum-package/contracts/math/SafeMath.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
+import "@openzeppelin/contracts/math/SafeMath.sol";
 
 /**
  * @title RewardsDistributor - Distribute pro rata rewards (dividends)
@@ -11,7 +10,7 @@ import "@openzeppelin/contracts-ethereum-package/contracts/math/SafeMath.sol";
  *      Based on [1] http://batog.info/papers/scalable-reward-distribution.pdf
  *      And on [2] https://solmaz.io/2019/02/24/scalable-reward-changing/
  */
-contract RewardsDistributor is Initializable, Ownable {
+contract RewardsDistributor is Ownable {
     using SafeMath for uint256;
 
     /// @notice ELIGIBLE_UNIT is the smallest eligible unit for reward. Minimum
@@ -55,9 +54,7 @@ contract RewardsDistributor is Initializable, Ownable {
 
     /// Initialize the contract.
     /// @param owner Contract owner, can call functions that change state.
-    function initialize(address owner) public initializer {
-        Ownable.initialize(owner);
-
+    constructor(address owner) public Ownable {
         _stakeTotal = 0;
         _rewardTotal = 0;
         _rewardRemainder = 0;
