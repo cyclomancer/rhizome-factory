@@ -66,7 +66,7 @@ contract CcDAO {
         BondingCurve RhizomeCurve = new BondingCurve(address(this));
     }
 
-    function() external payable {}
+    fallback() external {}
 
     function addProject(address _project, uint256 amount) public {
         require(roles[msg.sender] == ROLE_FACILITATOR, INSUFFICIENT_PRIVILEGES);
