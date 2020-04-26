@@ -5,9 +5,12 @@
   "scripts": {
     "ganache": "ganache-cli -m 'strong bright manual polar gorilla security kiss smart detect essence drastic table'",
     "start": "run-p deploy ganache",
+    "test": "run-p truffle-test ganache",
     "deploy": "run-s wait migrate",
     "wait": "wait-on tcp:8545",
-    "migrate": "truffle deploy"
+    "migrate": "truffle deploy",
+    "wait-test": "run-s wait truffle-test",
+    "truffle-test": "truffle test"
   },
   "repository": {
     "type": "git",
@@ -22,6 +25,7 @@
   "dependencies": {
     "@openzeppelin/cli": "^2.8.2",
     "@openzeppelin/contracts": "^3.0.0",
+    "@truffle/contract": "^4.2.2",
     "ethers": "^4.0.47",
     "ganache-cli": "^6.9.1",
     "npm-run-all": "^4.1.5",

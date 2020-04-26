@@ -1,11 +1,12 @@
-var CcDAO = artifacts.require("CcDAO");
+const CcDAO = artifacts.require("CcDAO");
 const ethers = require('ethers');
 
 const mnemonic = "strong bright manual polar gorilla security kiss smart detect essence drastic table"
-let provider = new ethers.providers.Web3Provider(web3.currentProvider);
-let bareWallet = new ethers.Wallet.fromMnemonic(mnemonic)
-let wallet = bareWallet.connect(provider)
+const provider = new ethers.providers.Web3Provider(web3.currentProvider);
+const bareWallet = new ethers.Wallet.fromMnemonic(mnemonic)
+const wallet = bareWallet.connect(provider)
 module.exports = function(deployer) {
+  console.log('deploy')
   // deployment steps
-  wallet.getAddress().then(address => deployer.deploy(PGToken, "Rhizome", address))
+  return wallet.getAddress().then(address => deployer.deploy(CcDAO, "Rhizome", address))
 }

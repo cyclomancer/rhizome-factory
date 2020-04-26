@@ -1,6 +1,6 @@
 pragma solidity ^0.6.4;
 
-import "./DAO.sol";
+import "./CcDAO.sol";
 import "./DSMath.sol";
 
 contract BondingCurve is DSMath {
