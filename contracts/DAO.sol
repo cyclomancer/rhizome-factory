@@ -73,7 +73,7 @@ contract CcDAO {
 
     functional allocate(address _project, uint256 amount) public {
         require(amount <= address(this).balance, INSUFFICIENT_FUNDS);
-
+        
     }
 
     /**
@@ -111,6 +111,7 @@ contract CcDAO {
     /// @notice Distribute tokens pro rata to all stakers.
     function distribute(address project) internal returns (bool success) {
         uint256 rewards = allocations[project];
+        /////
         // add past distribution remainder
         uint256 _amountToDistribute = rewards.add(_rewardRemainder);
 
